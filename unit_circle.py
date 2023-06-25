@@ -67,16 +67,28 @@ def main(winx, winy):
 		# Update
 		mouse_pos = pygame.math.Vector2(pygame.mouse.get_pos())
 
-		loc_vec = mouse_pos - midpoint
-		loc_vec.normalize_ip()
+		angle_vec = mouse_pos - midpoint
+		cangle = 0
 
-		cangle = int(left_vec.angle_to(loc_vec))
+		try:
+			angle_vec.normalize_ip()
+			cangle = int(left_vec.angle_to(angle_vec))
+		except ValueError:
+			pass
+
 		if cangle < 0:
 			cangle = -cangle
 		else:
 			cangle = 360 - cangle
 
-		#print("cangle", cangle)
+		# Extract position details from the angle
+		# Should automatically translate to the midpoint
+		# and scale to the outline circle's radius
+		canglex, cangley = get_translated_position_from_angle(
+			midpoint,
+			cangle,
+			outline_rad,
+		)
 
 		# Input
 		for e in pygame.event.get():
@@ -105,12 +117,12 @@ def main(winx, winy):
 		draw_circle_angle(screen, midpoint, cangle)
 		
 		# location vector
-		#pygame.draw.line(
-		#	screen,
-		#	grey_col,
-		#	(int(midpoint.x), int(midpoint.y)),
-		#	(int(canglex), int(cangley)),
-		#)
+		pygame.draw.line(
+			screen,
+			grey_col,
+			(int(midpoint.x), int(midpoint.y)),
+			(int(canglex), int(cangley)),
+		)
 		pygame.display.flip()
 
 	pygame.display.quit()
