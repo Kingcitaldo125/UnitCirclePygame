@@ -148,6 +148,22 @@ def main(winx, winy):
 		# Circle at point along the angle vector where it and mouse point intersect
 		pygame.draw.circle(screen, rand_col, (int(lerped_pos.x), int(lerped_pos.y)), 5)
 
+		# x angle vector
+		pygame.draw.line(
+			screen,
+			blue_col,
+			(int(midpoint.x), int(midpoint.y)),
+			(int(mouse_pos.x), int(midpoint.y)),
+		)
+
+		# y angle vector
+		pygame.draw.line(
+			screen,
+			green_col,
+			(int(mouse_pos.x), int(midpoint.y)),
+			(int(mouse_pos.x), int(mouse_pos.y)),
+		)
+
 		pygame.display.flip()
 
 	pygame.display.quit()
