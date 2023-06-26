@@ -1,15 +1,15 @@
 import pygame
 import math
+from random import randrange
 import time
 
-def distance(pos1, pos2):
-	return math.sqrt((pos1[0] - pos2[0])**2 + (pos1[1] - pos2[1])**2)
 
 def get_angle_pos(angle):
 	anglex = math.cos(math.radians(angle))
 	angley = math.sin(math.radians(angle))
 
 	return (anglex, angley)
+
 
 def get_translated_position_from_angle(position, angle, scaling_factor=1):
 	pos = get_angle_pos(angle)
@@ -21,6 +21,7 @@ def get_translated_position_from_angle(position, angle, scaling_factor=1):
 	angley = position.y + scaling_factor * -angley
 
 	return (anglex, angley)
+
 
 def draw_circle_angle(screen, point, final_angle):
 	if final_angle <= 1:
@@ -45,17 +46,20 @@ def main(winx, winy):
 	pygame.display.init()
 
 	black_col = (0,0,0)
+	red_col = (255,0,0)
 	blue_col = (9,11,141)
 	green_col = (61,192,62)
 	pink_col = (255,0,255)
 	grey_col = (170,170,170)
+	rand_col = tuple([randrange(0,255) for i in range(3)])
 
 	screen = pygame.display.set_mode((winx, winy))
 
 	done = False
 
 	midpoint = pygame.math.Vector2(winx//2, winy//2)
-	midpoint_distance = int(distance((winx//2, 0), midpoint))
+	toppoint = pygame.math.Vector2((winx//2, 0))
+	midpoint_distance = midpoint.distance_to(toppoint)
 
 	outline_offset = 25
 	outline_rad = int(midpoint_distance - outline_offset)
@@ -79,7 +83,7 @@ def main(winx, winy):
 		if cangle < 0:
 			cangle = -cangle
 		else:
-			cangle = 360 - cangle
+			cangle = 360 - cangle\
 
 		# Extract position details from the angle
 		# Should automatically translate to the midpoint
@@ -89,6 +93,17 @@ def main(winx, winy):
 			cangle,
 			outline_rad,
 		)
+
+		rad_vec = pygame.math.Vector2((canglex, cangley))
+
+		mp_dist = midpoint.distance_to(mouse_pos)
+		rv_dist = rad_vec.distance_to(midpoint)
+		ratio = mp_dist / rv_dist
+
+		if ratio > 1.0:
+			ratio = 1.0
+
+		lerped_pos = rad_vec.lerp(pygame.math.Vector2(midpoint), 1-ratio)
 
 		# Input
 		for e in pygame.event.get():
@@ -114,8 +129,11 @@ def main(winx, winy):
 		)
 
 		# angle
-		draw_circle_angle(screen, midpoint, cangle)
-		
+		if cangle != 90:
+			draw_circle_angle(screen, midpoint, cangle)
+		else:
+			pygame.draw.rect(screen, pink_col, (midpoint.x, midpoint.y - 50, 50, 51), 1)
+
 		# location vector
 		pygame.draw.line(
 			screen,
@@ -123,6 +141,13 @@ def main(winx, winy):
 			(int(midpoint.x), int(midpoint.y)),
 			(int(canglex), int(cangley)),
 		)
+
+		# Circle at point where angle vector and outer circle intersect
+		pygame.draw.circle(screen, red_col, (int(rad_vec.x), int(rad_vec.y)), 3)
+
+		# Circle at point along the angle vector where it and mouse point intersect
+		pygame.draw.circle(screen, rand_col, (int(lerped_pos.x), int(lerped_pos.y)), 5)
+
 		pygame.display.flip()
 
 	pygame.display.quit()
