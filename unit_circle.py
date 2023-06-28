@@ -41,6 +41,24 @@ def draw_circle_angle(screen, point, final_angle):
 
 		screen.set_at((int(anglex), int(angley)), pink_col)
 
+def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
+	# x angle vector
+	pygame.draw.line(
+		screen,
+		blue_col,
+		(int(midpoint.x), int(midpoint.y)),
+		(int(finalpoint.x), int(midpoint.y)),
+		2,
+	)
+
+	# y angle vector
+	pygame.draw.line(
+		screen,
+		green_col,
+		(int(finalpoint.x), int(midpoint.y)),
+		(int(finalpoint.x), int(finalpoint.y)),
+		2,
+	)
 
 def main(winx, winy):
 	pygame.display.init()
@@ -59,7 +77,7 @@ def main(winx, winy):
 
 	midpoint = pygame.math.Vector2(winx//2, winy//2)
 	toppoint = pygame.math.Vector2((winx//2, 0))
-	midpoint_distance = midpoint.distance_to(toppoint)
+	midpoint_distance = midpoint.distance_to(toppoint) - 100
 
 	outline_offset = 25
 	outline_rad = int(midpoint_distance - outline_offset)
@@ -140,6 +158,7 @@ def main(winx, winy):
 			grey_col,
 			(int(midpoint.x), int(midpoint.y)),
 			(int(canglex), int(cangley)),
+			2,
 		)
 
 		# Circle at point where angle vector and outer circle intersect
@@ -148,21 +167,14 @@ def main(winx, winy):
 		# Circle at point along the angle vector where it and mouse point intersect
 		pygame.draw.circle(screen, rand_col, (int(lerped_pos.x), int(lerped_pos.y)), 5)
 
-		# x angle vector
-		pygame.draw.line(
-			screen,
-			blue_col,
-			(int(midpoint.x), int(midpoint.y)),
-			(int(mouse_pos.x), int(midpoint.y)),
-		)
-
-		# y angle vector
-		pygame.draw.line(
-			screen,
-			green_col,
-			(int(mouse_pos.x), int(midpoint.y)),
-			(int(mouse_pos.x), int(mouse_pos.y)),
-		)
+		# draw_angle_vectors
+		# if the mouse is outside the circle, truncate the angle vectors to
+		# only draw inside of the circle
+		mouse_inside_circle = mouse_pos.distance_to(midpoint) <= outline_rad
+		if mouse_inside_circle:
+			draw_angle_vectors(screen, blue_col, green_col, midpoint, mouse_pos)
+		else:
+			draw_angle_vectors(screen, blue_col, green_col, midpoint, rad_vec)
 
 		pygame.display.flip()
 
