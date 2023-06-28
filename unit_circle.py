@@ -73,6 +73,8 @@ def main(winx, winy):
 
 	screen = pygame.display.set_mode((winx, winy))
 
+	clock = pygame.time.Clock()
+
 	done = False
 
 	midpoint = pygame.math.Vector2(winx//2, winy//2)
@@ -177,6 +179,8 @@ def main(winx, winy):
 			draw_angle_vectors(screen, blue_col, green_col, midpoint, rad_vec)
 
 		pygame.display.flip()
+		
+		clock.tick(60)
 
 	pygame.display.quit()
 
