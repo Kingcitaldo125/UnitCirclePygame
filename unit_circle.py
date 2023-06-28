@@ -60,13 +60,37 @@ def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
 		2,
 	)
 
+def draw_cos_text(screen, font, col, black_col, cangle):
+	cos_text_val = str(round(math.cos(math.radians(cangle)),3))
+	cos_text = font.render("cos("+str(cangle)+"°) = "+cos_text_val, False, col, black_col)
+	cos_text_rect = cos_text.get_rect()
+	cos_text_rect.center = (150, 30)
+	screen.blit(cos_text, cos_text_rect)
+
+def draw_sin_text(screen, font, col, black_col, cangle):
+	sin_text_val = str(round(math.sin(math.radians(cangle)),3))
+	sin_text = font.render("sin("+str(cangle)+"°) = "+sin_text_val, False, col, black_col)
+	sin_text_rect = sin_text.get_rect()
+	sin_text_rect.center = (150, 65)
+	screen.blit(sin_text, sin_text_rect)
+
+def draw_tan_text(screen, font, col, black_col, cangle):
+	tan_val = math.tan(math.radians(cangle))
+	tan_text_val = str(round(tan_val,3))
+	if tan_val > 30:
+		tan_text_val = "undefined"
+	tan_text = font.render("tan("+str(cangle)+"°) = "+tan_text_val, False, col, black_col)
+	tan_text_rect = tan_text.get_rect()
+	tan_text_rect.center = (150, 100)
+	screen.blit(tan_text, tan_text_rect)
+
 def main(winx, winy):
 	pygame.display.init()
 
-	black_col = (0,0,0)
+	black_col = (18,22,28)
 	red_col = (255,0,0)
-	blue_col = (9,11,141)
-	green_col = (61,192,62)
+	blue_col = (0,0,255)
+	green_col = (0,255,0)
 	pink_col = (255,0,255)
 	grey_col = (170,170,170)
 	rand_col = tuple([randrange(0,255) for i in range(3)])
@@ -74,6 +98,9 @@ def main(winx, winy):
 	screen = pygame.display.set_mode((winx, winy))
 
 	clock = pygame.time.Clock()
+	
+	pygame.font.init()
+	font = pygame.font.Font('freesansbold.ttf', 16)
 
 	done = False
 
@@ -178,10 +205,17 @@ def main(winx, winy):
 		else:
 			draw_angle_vectors(screen, blue_col, green_col, midpoint, rad_vec)
 
+		# Text
+		# render(text, antialias, color, background=None)
+		draw_cos_text(screen, font, blue_col, black_col, cangle)
+		draw_sin_text(screen, font, green_col, black_col, cangle)
+		draw_tan_text(screen, font, grey_col, black_col, cangle)
+
 		pygame.display.flip()
 		
 		clock.tick(60)
 
+	pygame.font.quit()
 	pygame.display.quit()
 
 
