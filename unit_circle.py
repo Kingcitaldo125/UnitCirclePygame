@@ -6,7 +6,7 @@ import time
 
 def get_angle_pos(angle):
 	"""
-	asdf
+	Given an angle, in degrees, return the resulting normalized x,y polar coordinate.
 	"""
 	anglex = math.cos(math.radians(angle))
 	angley = math.sin(math.radians(angle))
@@ -16,7 +16,11 @@ def get_angle_pos(angle):
 
 def get_translated_position_from_angle(position, angle, scaling_factor=1):
 	"""
-	asdf
+	Given an angle, in degrees, and a position, as a PyGame Vector2,
+	return the resulting normalized x,y polar coordinate translated to
+	a world space position that's indicated by the position vector.
+	scaling_factor will scale the resulting positions by a factor of
+	itself and the associated angle position.
 	"""
 	pos = get_angle_pos(angle)
 
@@ -31,7 +35,10 @@ def get_translated_position_from_angle(position, angle, scaling_factor=1):
 
 def draw_circle_angle(screen, point, final_angle):
 	"""
-	asdf
+	Draw a 'partial' circle around the 'point' position vector, up to the 'final_angle'.
+	Calculates the position of the pixels that should be 'filled in' given a partial angle,
+	then fills in the resulting pixels at said position.
+	Moves in a counter-clockwise direction, starting at angle/theta of '1' degrees.
 	"""
 	if final_angle <= 1:
 		return
