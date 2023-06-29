@@ -5,6 +5,9 @@ import time
 
 
 def get_angle_pos(angle):
+	"""
+	asdf
+	"""
 	anglex = math.cos(math.radians(angle))
 	angley = math.sin(math.radians(angle))
 
@@ -12,6 +15,9 @@ def get_angle_pos(angle):
 
 
 def get_translated_position_from_angle(position, angle, scaling_factor=1):
+	"""
+	asdf
+	"""
 	pos = get_angle_pos(angle)
 
 	anglex = pos[0]
@@ -24,6 +30,9 @@ def get_translated_position_from_angle(position, angle, scaling_factor=1):
 
 
 def draw_circle_angle(screen, point, final_angle):
+	"""
+	asdf
+	"""
 	if final_angle <= 1:
 		return
 
@@ -42,6 +51,9 @@ def draw_circle_angle(screen, point, final_angle):
 		screen.set_at((int(anglex), int(angley)), pink_col)
 
 def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
+	"""
+	asdf
+	"""
 	# x angle vector
 	pygame.draw.line(
 		screen,
@@ -61,6 +73,9 @@ def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
 	)
 
 def draw_cos_text(screen, font, col, black_col, cangle):
+	"""
+	asdf
+	"""
 	cos_text_val = str(round(math.cos(math.radians(cangle)),3))
 	cos_text = font.render("cos("+str(cangle)+"°) = "+cos_text_val, False, col, black_col)
 	cos_text_rect = cos_text.get_rect()
@@ -68,6 +83,9 @@ def draw_cos_text(screen, font, col, black_col, cangle):
 	screen.blit(cos_text, cos_text_rect)
 
 def draw_sin_text(screen, font, col, black_col, cangle):
+	"""
+	asdf
+	"""
 	sin_text_val = str(round(math.sin(math.radians(cangle)),3))
 	sin_text = font.render("sin("+str(cangle)+"°) = "+sin_text_val, False, col, black_col)
 	sin_text_rect = sin_text.get_rect()
@@ -75,6 +93,9 @@ def draw_sin_text(screen, font, col, black_col, cangle):
 	screen.blit(sin_text, sin_text_rect)
 
 def draw_tan_text(screen, font, col, black_col, cangle):
+	"""
+	asdf
+	"""
 	tan_val = math.tan(math.radians(cangle))
 	tan_text_val = str(round(tan_val,3))
 	if tan_val > 30:
@@ -85,6 +106,9 @@ def draw_tan_text(screen, font, col, black_col, cangle):
 	screen.blit(tan_text, tan_text_rect)
 
 def main(winx, winy):
+	"""
+	asdf
+	"""
 	pygame.display.init()
 
 	black_col = (18,22,28)
