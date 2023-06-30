@@ -40,13 +40,10 @@ def draw_circle_angle(screen, point, final_angle):
 	then fills in the resulting pixels at said position.
 	Moves in a counter-clockwise direction, starting at angle/theta of '1' degrees.
 	"""
-	if final_angle <= 1:
-		return
-
 	pink_col = (255,0,255)
 	circle_rad = 50
 
-	for angle in range(1, final_angle):		
+	for angle in range(final_angle):
 		apos = get_angle_pos(angle)
 
 		anglex = apos[0]
@@ -81,35 +78,35 @@ def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
 		2,
 	)
 
-def draw_cos_text(screen, font, col, black_col, cangle):
+def draw_cos_text(screen, font, col, black_col, theta):
 	"""
-	Draw 'cos(cangle) = X to the screen. Where 'X' is the cosine of the 'cangle'.
+	Draw 'cos(theta) = X to the screen. Where 'X' is the cosine of the 'theta'.
 	"""
-	cos_text_val = str(round(math.cos(math.radians(cangle)),3))
-	cos_text = font.render("cos("+str(cangle)+"°) = "+cos_text_val, False, col, black_col)
+	cos_text_val = str(round(math.cos(math.radians(theta)),3))
+	cos_text = font.render("cos("+str(theta)+"°) = "+cos_text_val, False, col, black_col)
 	cos_text_rect = cos_text.get_rect()
 	cos_text_rect.center = (150, 30)
 	screen.blit(cos_text, cos_text_rect)
 
-def draw_sin_text(screen, font, col, black_col, cangle):
+def draw_sin_text(screen, font, col, black_col, theta):
 	"""
-	Draw 'sin(cangle) = X to the screen. Where 'X' is the sine of the 'cangle'.
+	Draw 'sin(theta) = X to the screen. Where 'X' is the sine of the 'theta'.
 	"""
-	sin_text_val = str(round(math.sin(math.radians(cangle)),3))
-	sin_text = font.render("sin("+str(cangle)+"°) = "+sin_text_val, False, col, black_col)
+	sin_text_val = str(round(math.sin(math.radians(theta)),3))
+	sin_text = font.render("sin("+str(theta)+"°) = "+sin_text_val, False, col, black_col)
 	sin_text_rect = sin_text.get_rect()
 	sin_text_rect.center = (150, 65)
 	screen.blit(sin_text, sin_text_rect)
 
-def draw_tan_text(screen, font, col, black_col, cangle):
+def draw_tan_text(screen, font, col, black_col, theta):
 	"""
-	Draw 'tan(cangle) = X to the screen. Where 'X' is the tangent of the 'cangle'.
+	Draw 'tan(theta) = X to the screen. Where 'X' is the tangent of the 'theta'.
 	"""
-	tan_val = math.tan(math.radians(cangle))
+	tan_val = math.tan(math.radians(theta))
 	tan_text_val = str(round(tan_val,3))
 	if tan_val > 30:
 		tan_text_val = "undefined"
-	tan_text = font.render("tan("+str(cangle)+"°) = "+tan_text_val, False, col, black_col)
+	tan_text = font.render("tan("+str(theta)+"°) = "+tan_text_val, False, col, black_col)
 	tan_text_rect = tan_text.get_rect()
 	tan_text_rect.center = (150, 100)
 	screen.blit(tan_text, tan_text_rect)
@@ -152,29 +149,32 @@ def main(winx, winy):
 		mouse_pos = pygame.math.Vector2(pygame.mouse.get_pos())
 
 		angle_vec = mouse_pos - midpoint
-		cangle = 0
+		theta = 0
 
 		try:
 			angle_vec.normalize_ip()
-			cangle = int(left_vec.angle_to(angle_vec))
+			theta = int(left_vec.angle_to(angle_vec))
 		except ValueError:
 			pass
 
-		if cangle < 0:
-			cangle = -cangle
+		if theta < 0:
+			theta = -theta
 		else:
-			cangle = 360 - cangle\
+			theta = 360 - theta
+
+		if theta == 360:
+			theta = 0
 
 		# Extract position details from the angle
 		# Should automatically translate to the midpoint
 		# and scale to the outline circle's radius
-		canglex, cangley = get_translated_position_from_angle(
+		thetax, thetay = get_translated_position_from_angle(
 			midpoint,
-			cangle,
+			theta,
 			outline_rad,
 		)
 
-		rad_vec = pygame.math.Vector2((canglex, cangley))
+		rad_vec = pygame.math.Vector2((thetax, thetay))
 
 		mp_dist = midpoint.distance_to(mouse_pos)
 		rv_dist = rad_vec.distance_to(midpoint)
@@ -209,8 +209,8 @@ def main(winx, winy):
 		)
 
 		# angle
-		if cangle != 90:
-			draw_circle_angle(screen, midpoint, cangle)
+		if theta != 90:
+			draw_circle_angle(screen, midpoint, theta)
 		else:
 			pygame.draw.rect(screen, pink_col, (midpoint.x, midpoint.y - 50, 50, 51), 1)
 
@@ -220,7 +220,7 @@ def main(winx, winy):
 			screen,
 			grey_col,
 			(int(midpoint.x), int(midpoint.y)),
-			(int(canglex), int(cangley)),
+			(int(thetax), int(thetay)),
 			2,
 		)
 
@@ -233,16 +233,16 @@ def main(winx, winy):
 		# draw_angle_vectors
 		# if the mouse is outside the circle, truncate the angle vectors to
 		# only draw inside of the circle
-		mouse_inside_circle = mouse_pos.distance_to(midpoint) <= outline_rad
-		if mouse_inside_circle:
-			draw_angle_vectors(screen, blue_col, green_col, midpoint, mouse_pos)
-		else:
-			draw_angle_vectors(screen, blue_col, green_col, midpoint, rad_vec)
+		#mouse_inside_circle = mouse_pos.distance_to(midpoint) <= outline_rad
+		#if mouse_inside_circle:
+		#	draw_angle_vectors(screen, blue_col, green_col, midpoint, mouse_pos)
+		#else:
+		draw_angle_vectors(screen, blue_col, green_col, midpoint, rad_vec)
 
 		# Text
-		draw_cos_text(screen, font, blue_col, black_col, cangle)
-		draw_sin_text(screen, font, green_col, black_col, cangle)
-		draw_tan_text(screen, font, grey_col, black_col, cangle)
+		draw_cos_text(screen, font, blue_col, black_col, theta)
+		draw_sin_text(screen, font, green_col, black_col, theta)
+		draw_tan_text(screen, font, grey_col, black_col, theta)
 
 		pygame.display.flip()
 		
