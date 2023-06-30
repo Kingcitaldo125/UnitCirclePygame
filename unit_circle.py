@@ -59,7 +59,9 @@ def draw_circle_angle(screen, point, final_angle):
 
 def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
 	"""
-	asdf
+	Draw lines representing the x and y angle vectors to the 'screen'.
+	The x vector represents the 'adjacent' side of the angle in the unit circle (blue).
+	The y vector represents the 'opposite' side of the angle in the unit circle (green).
 	"""
 	# x angle vector
 	pygame.draw.line(
@@ -81,7 +83,7 @@ def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
 
 def draw_cos_text(screen, font, col, black_col, cangle):
 	"""
-	asdf
+	Draw 'cos(cangle) = X to the screen. Where 'X' is the cosine of the 'cangle'.
 	"""
 	cos_text_val = str(round(math.cos(math.radians(cangle)),3))
 	cos_text = font.render("cos("+str(cangle)+"°) = "+cos_text_val, False, col, black_col)
@@ -91,7 +93,7 @@ def draw_cos_text(screen, font, col, black_col, cangle):
 
 def draw_sin_text(screen, font, col, black_col, cangle):
 	"""
-	asdf
+	Draw 'sin(cangle) = X to the screen. Where 'X' is the sine of the 'cangle'.
 	"""
 	sin_text_val = str(round(math.sin(math.radians(cangle)),3))
 	sin_text = font.render("sin("+str(cangle)+"°) = "+sin_text_val, False, col, black_col)
@@ -101,7 +103,7 @@ def draw_sin_text(screen, font, col, black_col, cangle):
 
 def draw_tan_text(screen, font, col, black_col, cangle):
 	"""
-	asdf
+	Draw 'tan(cangle) = X to the screen. Where 'X' is the tangent of the 'cangle'.
 	"""
 	tan_val = math.tan(math.radians(cangle))
 	tan_text_val = str(round(tan_val,3))
@@ -114,7 +116,7 @@ def draw_tan_text(screen, font, col, black_col, cangle):
 
 def main(winx, winy):
 	"""
-	asdf
+	Driver code. Houses all of the main application logic.
 	"""
 	pygame.display.init()
 
@@ -213,6 +215,7 @@ def main(winx, winy):
 			pygame.draw.rect(screen, pink_col, (midpoint.x, midpoint.y - 50, 50, 51), 1)
 
 		# location vector
+		# represents the 'hypotenuse' side of the angle in the unit circle (grey).
 		pygame.draw.line(
 			screen,
 			grey_col,
@@ -237,7 +240,6 @@ def main(winx, winy):
 			draw_angle_vectors(screen, blue_col, green_col, midpoint, rad_vec)
 
 		# Text
-		# render(text, antialias, color, background=None)
 		draw_cos_text(screen, font, blue_col, black_col, cangle)
 		draw_sin_text(screen, font, green_col, black_col, cangle)
 		draw_tan_text(screen, font, grey_col, black_col, cangle)
