@@ -230,13 +230,6 @@ def main(winx, winy):
 		# Circle at point along the angle vector where it and mouse point intersect
 		pygame.draw.circle(screen, rand_col, (int(lerped_pos.x), int(lerped_pos.y)), 5)
 
-		# draw_angle_vectors
-		# if the mouse is outside the circle, truncate the angle vectors to
-		# only draw inside of the circle
-		#mouse_inside_circle = mouse_pos.distance_to(midpoint) <= outline_rad
-		#if mouse_inside_circle:
-		#	draw_angle_vectors(screen, blue_col, green_col, midpoint, mouse_pos)
-		#else:
 		draw_angle_vectors(screen, blue_col, green_col, midpoint, rad_vec)
 
 		# Text
