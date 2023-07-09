@@ -1,7 +1,10 @@
 import pygame
 import math
 from random import randrange
-import time
+
+from fontcontroller import FontController
+from rendertext import RenderText
+
 
 def lerp(v0, v1, t):
 	return v0 + t * (v1 - v0)
@@ -80,38 +83,36 @@ def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
 		2,
 	)
 
-def draw_cos_text(screen, font, col, black_col, theta):
+def draw_cos_text(screen, rendertext, theta):
 	"""
 	Draw 'cos(theta) = X to the screen. Where 'X' is the cosine of the 'theta'.
 	"""
 	cos_text_val = str(round(math.cos(math.radians(theta)),3))
-	cos_text = font.render("cos("+str(theta)+"°) = "+cos_text_val, False, col, black_col)
-	cos_text_rect = cos_text.get_rect()
-	cos_text_rect.center = (150, 30)
-	screen.blit(cos_text, cos_text_rect)
+	rendertext.update_x(150)
+	rendertext.update_y(30)
+	rendertext.update_text("cos("+str(theta)+"°) = "+cos_text_val)
+	rendertext.draw(screen)
 
-def draw_sin_text(screen, font, col, black_col, theta):
+def draw_sin_text(screen, rendertext, theta):
 	"""
 	Draw 'sin(theta) = X to the screen. Where 'X' is the sine of the 'theta'.
 	"""
 	sin_text_val = str(round(math.sin(math.radians(theta)),3))
-	sin_text = font.render("sin("+str(theta)+"°) = "+sin_text_val, False, col, black_col)
-	sin_text_rect = sin_text.get_rect()
-	sin_text_rect.center = (150, 65)
-	screen.blit(sin_text, sin_text_rect)
+	rendertext.update_x(150)
+	rendertext.update_y(65)
+	rendertext.update_text("sin("+str(theta)+"°) = "+sin_text_val)
+	rendertext.draw(screen)
 
-def draw_tan_text(screen, font, col, black_col, theta):
+def draw_tan_text(screen, rendertext, theta):
 	"""
 	Draw 'tan(theta) = X to the screen. Where 'X' is the tangent of the 'theta'.
 	"""
 	tan_val = math.tan(math.radians(theta))
 	tan_text_val = str(round(tan_val,3))
-	if tan_val > 30:
-		tan_text_val = "undefined"
-	tan_text = font.render("tan("+str(theta)+"°) = "+tan_text_val, False, col, black_col)
-	tan_text_rect = tan_text.get_rect()
-	tan_text_rect.center = (150, 100)
-	screen.blit(tan_text, tan_text_rect)
+	rendertext.update_x(150)
+	rendertext.update_y(100)
+	rendertext.update_text("sin("+str(theta)+"°) = "+tan_text_val)
+	rendertext.draw(screen)
 
 def main(winx, winy):
 	"""
@@ -130,9 +131,8 @@ def main(winx, winy):
 	screen = pygame.display.set_mode((winx, winy))
 
 	clock = pygame.time.Clock()
-	
-	pygame.font.init()
-	font = pygame.font.Font('freesansbold.ttf', 16)
+
+	font_controller = FontController()
 
 	done = False
 
@@ -145,6 +145,12 @@ def main(winx, winy):
 
 	left_vec = pygame.math.Vector2((winx, winy//2)) - midpoint
 	left_vec.normalize_ip()
+
+	cosine_rendertext = RenderText(font_controller, blue_col, black_col)
+	sine_rendertext = RenderText(font_controller, green_col, black_col)
+	tangent_rendertext = RenderText(font_controller, grey_col, black_col)
+
+	print("Press 'Esc' to quit")
 
 	while not done:
 		# Update
@@ -235,40 +241,33 @@ def main(winx, winy):
 		draw_angle_vectors(screen, blue_col, green_col, midpoint, rad_vec)
 
 		# Text
-		draw_cos_text(screen, font, blue_col, black_col, theta)
-		draw_sin_text(screen, font, green_col, black_col, theta)
-		draw_tan_text(screen, font, grey_col, black_col, theta)
-
-		# Draw text value cosine
+		draw_cos_text(screen, cosine_rendertext, theta)
+		draw_sin_text(screen, sine_rendertext, theta)
+		draw_tan_text(screen, tangent_rendertext, theta)
+		
+		#"""
+		# Draw text value cosine along angle vector
 		cos_text_val = str(round(math.cos(math.radians(theta)),3))
-		cos_text = font.render(cos_text_val, False, blue_col, black_col)
-		cos_text_rect = cos_text.get_rect()
-		cos_text_rect.center = (lerp(int(midpoint.x), int(rad_vec.x), 0.5), winy//2)
-		screen.blit(cos_text, cos_text_rect)
 
-		# Draw text value sine
+		cosine_rendertext.update_x(lerp(int(midpoint.x), int(rad_vec.x), 0.5))
+		cosine_rendertext.update_y(winy//2)
+		cosine_rendertext.update_text(cos_text_val)
+		cosine_rendertext.draw(screen)
+
+		# Draw text value sine along angle vector
 		sin_text_val = str(round(math.sin(math.radians(theta)),3))
-		sin_text = font.render(sin_text_val, False, green_col, black_col)
-		sin_text_rect = sin_text.get_rect()
-		sin_text_rect.center = (int(rad_vec.x), lerp(int(midpoint.y), int(rad_vec.y), 0.5))
-		screen.blit(sin_text, sin_text_rect)
 
-		#(int(finalpoint.x), int(midpoint.y)),
-		#(int(finalpoint.x), int(finalpoint.y)),
-		# Draw text value cosine
-		"""
-		cos_text_val = str(round(math.cos(math.radians(theta)),3))
-		cos_text = font.render(cos_text_val, False, blue_col, black_col)
-		cos_text_rect = cos_text.get_rect()
-		cos_text_rect.center = (lerp(int(midpoint.x), int(rad_vec.x), 0.5), winy//2)
-		screen.blit(cos_text, cos_text_rect)
-		"""
+		sine_rendertext.update_x(int(rad_vec.x))
+		sine_rendertext.update_y(lerp(int(midpoint.y), int(rad_vec.y), 0.5))
+		sine_rendertext.update_text(sin_text_val)
+		sine_rendertext.draw(screen)
+		#"""
 
 		pygame.display.flip()
 
 		clock.tick(60)
 
-	pygame.font.quit()
+	font_controller.quit()
 	pygame.display.quit()
 
 
