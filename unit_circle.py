@@ -152,7 +152,12 @@ def main(winx, winy):
 
 		cos_text_val = str(round(math.cos(mrad_theta), 3))
 		sin_text_val = str(round(math.sin(mrad_theta), 3))
-		tan_text_val = str(round(math.tan(mrad_theta), 3))
+
+		tan_val = math.tan(mrad_theta)
+		tan_text_val = str(round(tan_val, 3))
+
+		if tan_val > 30:
+			tan_text_val = "undefined"
 
 		theta_str = str(theta)
 
