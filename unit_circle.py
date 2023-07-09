@@ -3,6 +3,8 @@ import math
 from random import randrange
 import time
 
+def lerp(v0, v1, t):
+	return v0 + t * (v1 - v0)
 
 def get_angle_pos(angle):
 	"""
@@ -237,8 +239,33 @@ def main(winx, winy):
 		draw_sin_text(screen, font, green_col, black_col, theta)
 		draw_tan_text(screen, font, grey_col, black_col, theta)
 
+		# Draw text value cosine
+		cos_text_val = str(round(math.cos(math.radians(theta)),3))
+		cos_text = font.render(cos_text_val, False, blue_col, black_col)
+		cos_text_rect = cos_text.get_rect()
+		cos_text_rect.center = (lerp(int(midpoint.x), int(rad_vec.x), 0.5), winy//2)
+		screen.blit(cos_text, cos_text_rect)
+
+		# Draw text value sine
+		sin_text_val = str(round(math.sin(math.radians(theta)),3))
+		sin_text = font.render(sin_text_val, False, green_col, black_col)
+		sin_text_rect = sin_text.get_rect()
+		sin_text_rect.center = (int(rad_vec.x), lerp(int(midpoint.y), int(rad_vec.y), 0.5))
+		screen.blit(sin_text, sin_text_rect)
+
+		#(int(finalpoint.x), int(midpoint.y)),
+		#(int(finalpoint.x), int(finalpoint.y)),
+		# Draw text value cosine
+		"""
+		cos_text_val = str(round(math.cos(math.radians(theta)),3))
+		cos_text = font.render(cos_text_val, False, blue_col, black_col)
+		cos_text_rect = cos_text.get_rect()
+		cos_text_rect.center = (lerp(int(midpoint.x), int(rad_vec.x), 0.5), winy//2)
+		screen.blit(cos_text, cos_text_rect)
+		"""
+
 		pygame.display.flip()
-		
+
 		clock.tick(60)
 
 	pygame.font.quit()
