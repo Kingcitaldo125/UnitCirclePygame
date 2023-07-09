@@ -83,35 +83,10 @@ def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
 		2,
 	)
 
-def draw_cos_text(screen, rendertext, theta):
-	"""
-	Draw 'cos(theta) = X to the screen. Where 'X' is the cosine of the 'theta'.
-	"""
-	cos_text_val = str(round(math.cos(math.radians(theta)),3))
-	rendertext.update_x(150)
-	rendertext.update_y(30)
-	rendertext.update_text("cos("+str(theta)+"°) = "+cos_text_val)
-	rendertext.draw(screen)
-
-def draw_sin_text(screen, rendertext, theta):
-	"""
-	Draw 'sin(theta) = X to the screen. Where 'X' is the sine of the 'theta'.
-	"""
-	sin_text_val = str(round(math.sin(math.radians(theta)),3))
-	rendertext.update_x(150)
-	rendertext.update_y(65)
-	rendertext.update_text("sin("+str(theta)+"°) = "+sin_text_val)
-	rendertext.draw(screen)
-
-def draw_tan_text(screen, rendertext, theta):
-	"""
-	Draw 'tan(theta) = X to the screen. Where 'X' is the tangent of the 'theta'.
-	"""
-	tan_val = math.tan(math.radians(theta))
-	tan_text_val = str(round(tan_val,3))
-	rendertext.update_x(150)
-	rendertext.update_y(100)
-	rendertext.update_text("sin("+str(theta)+"°) = "+tan_text_val)
+def draw_text(screen, rendertext, x, y, text):
+	rendertext.update_x(x)
+	rendertext.update_y(y)
+	rendertext.update_text(text)
 	rendertext.draw(screen)
 
 def main(winx, winy):
@@ -172,6 +147,18 @@ def main(winx, winy):
 
 		if theta == 360:
 			theta = 0
+
+		mrad_theta = math.radians(theta)
+
+		cos_text_val = str(round(math.cos(mrad_theta), 3))
+		sin_text_val = str(round(math.sin(mrad_theta), 3))
+		tan_text_val = str(round(math.tan(mrad_theta), 3))
+
+		theta_str = str(theta)
+
+		cos_text = "cos("+theta_str+"°) = "+cos_text_val
+		sin_text = "sin("+theta_str+"°) = "+sin_text_val
+		tan_text = "tan("+theta_str+"°) = "+tan_text_val
 
 		# Extract position details from the angle
 		# Should automatically translate to the midpoint
@@ -240,28 +227,16 @@ def main(winx, winy):
 
 		draw_angle_vectors(screen, blue_col, green_col, midpoint, rad_vec)
 
-		# Text
-		draw_cos_text(screen, cosine_rendertext, theta)
-		draw_sin_text(screen, sine_rendertext, theta)
-		draw_tan_text(screen, tangent_rendertext, theta)
-		
-		#"""
-		# Draw text value cosine along angle vector
-		cos_text_val = str(round(math.cos(math.radians(theta)),3))
+		# Value Text
+		draw_text(screen, cosine_rendertext, 150, 30, cos_text)
+		draw_text(screen, sine_rendertext, 150, 65, sin_text)
+		draw_text(screen, tangent_rendertext, 150, 100, tan_text)
 
-		cosine_rendertext.update_x(lerp(int(midpoint.x), int(rad_vec.x), 0.5))
-		cosine_rendertext.update_y(winy//2)
-		cosine_rendertext.update_text(cos_text_val)
-		cosine_rendertext.draw(screen)
+		# Draw text value cosine along angle vector
+		draw_text(screen, cosine_rendertext, lerp(int(midpoint.x), int(rad_vec.x), 0.5), winy//2, cos_text_val)
 
 		# Draw text value sine along angle vector
-		sin_text_val = str(round(math.sin(math.radians(theta)),3))
-
-		sine_rendertext.update_x(int(rad_vec.x))
-		sine_rendertext.update_y(lerp(int(midpoint.y), int(rad_vec.y), 0.5))
-		sine_rendertext.update_text(sin_text_val)
-		sine_rendertext.draw(screen)
-		#"""
+		draw_text(screen, sine_rendertext, int(rad_vec.x), lerp(int(midpoint.y), int(rad_vec.y), 0.5), sin_text_val)
 
 		pygame.display.flip()
 
