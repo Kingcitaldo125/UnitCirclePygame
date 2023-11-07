@@ -7,6 +7,10 @@ from rendertext import RenderText
 
 
 def lerp(v0, v1, t):
+	"""
+	Typical WYSIWYG linear interpolation algorithm.
+	https://en.wikipedia.org/wiki/Linear_interpolation#Programming_language_support
+	"""
 	return v0 + t * (v1 - v0)
 
 def get_angle_pos(angle):
@@ -84,6 +88,9 @@ def draw_angle_vectors(screen, blue_col, green_col, midpoint, finalpoint):
 	)
 
 def draw_text(screen, rendertext, x, y, text):
+	"""
+	Draw text to the screen. 'screen' should be a valid pygame surface.
+	"""
 	rendertext.update_x(x)
 	rendertext.update_y(y)
 	rendertext.update_text(text)
@@ -95,6 +102,7 @@ def main(winx, winy):
 	"""
 	pygame.display.init()
 
+	# Default display colors for the geometry and rendertext
 	black_col = (18,22,28)
 	red_col = (255,0,0)
 	blue_col = (0,0,255)
@@ -111,16 +119,20 @@ def main(winx, winy):
 
 	done = False
 
+	# Calculate relative point-vectors for the unit circle's different points
 	midpoint = pygame.math.Vector2(winx//2, winy//2)
 	toppoint = pygame.math.Vector2((winx//2, 0))
 	midpoint_distance = midpoint.distance_to(toppoint) - 100
 
+	# Calculate the outline of the unit circle
 	outline_offset = 25
 	outline_rad = int(midpoint_distance - outline_offset)
 
+	# Calculate a relative vector going from the midpoint to pi (180 degrees)
 	left_vec = pygame.math.Vector2((winx, winy//2)) - midpoint
 	left_vec.normalize_ip()
 
+	# Generate rendered text objects (text/font objects that will get rendered on screen)
 	cosine_rendertext = RenderText(font_controller, blue_col, black_col)
 	sine_rendertext = RenderText(font_controller, green_col, black_col)
 	tangent_rendertext = RenderText(font_controller, grey_col, black_col)
@@ -131,23 +143,30 @@ def main(winx, winy):
 		# Update
 		mouse_pos = pygame.math.Vector2(pygame.mouse.get_pos())
 
+		# Calculate the vector resulting from a polar angle
 		angle_vec = mouse_pos - midpoint
 		theta = 0
 
+		# Try to extract the polar angle
+		# (between the left vector and the mouse vector)
 		try:
 			angle_vec.normalize_ip()
 			theta = int(left_vec.angle_to(angle_vec))
 		except ValueError:
 			pass
 
+		# Convert the angle going between the different quadrants appropriately
 		if theta < 0:
 			theta = -theta
 		else:
 			theta = 360 - theta
 
+		# Reset back to zero upon a full revolution
 		if theta == 360:
 			theta = 0
 
+		# Calculate and convert the raw trigonometric values into
+		# values that are appropriate to render to the display surface
 		mrad_theta = math.radians(theta)
 
 		cos_text_val = str(round(math.cos(mrad_theta), 3))
@@ -174,6 +193,10 @@ def main(winx, winy):
 			outline_rad,
 		)
 
+		# Calculate the vectors/magnitudes for the circle representing
+		# the position along the angle vector where the mouse and the
+		# angle vector intersect (mostly visual flair)
+		# The circle will be drawn down below
 		rad_vec = pygame.math.Vector2((thetax, thetay))
 
 		mp_dist = midpoint.distance_to(mouse_pos)
@@ -183,6 +206,8 @@ def main(winx, winy):
 		if ratio > 1.0:
 			ratio = 1.0
 
+		# Without this, the circle will be drawn at the opposite end
+		# of the actual intersection location (along the angle vector)
 		lerped_pos = rad_vec.lerp(pygame.math.Vector2(midpoint), 1-ratio)
 
 		# Input
