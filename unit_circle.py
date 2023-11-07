@@ -143,7 +143,7 @@ def main(winx, winy):
 		# Update
 		mouse_pos = pygame.math.Vector2(pygame.mouse.get_pos())
 
-		# Calculate the vector resulting from a polar angle
+		# Calculate the midpoint-mouse vector for extraction of a polar angle
 		angle_vec = mouse_pos - midpoint
 		theta = 0
 
@@ -196,7 +196,7 @@ def main(winx, winy):
 		# Calculate the vectors/magnitudes for the circle representing
 		# the position along the angle vector where the mouse and the
 		# angle vector intersect (mostly visual flair)
-		# The circle will be drawn down below
+		# The circle will be drawn in the 'draw' section down below
 		rad_vec = pygame.math.Vector2((thetax, thetay))
 
 		mp_dist = midpoint.distance_to(mouse_pos)
@@ -213,7 +213,7 @@ def main(winx, winy):
 		# Input
 		for e in pygame.event.get():
 			if e.type == pygame.KEYDOWN:
-				if e.key == 27: # Esc
+				if e.key == 27: # Esc key
 					print("Quitting..")
 					done = True
 
@@ -237,6 +237,7 @@ def main(winx, winy):
 		if theta != 90:
 			draw_circle_angle(screen, midpoint, theta)
 		else:
+			# draw the bounding square that's shown during a perfect right polar angle
 			pygame.draw.rect(screen, pink_col, (midpoint.x, midpoint.y - 50, 50, 51), 1)
 
 		# location vector
